@@ -1,6 +1,7 @@
+﻿
 /************************** USE SCHEMA MESSANGER **************************/
-Use Messanger
-
+--CREATE DATABASE Elmos_Messanger
+--USE Messanger
 /************************** CREATE TABLE COMMANDS **************************/
 
 CREATE TABLE Users(
@@ -95,11 +96,11 @@ Sender_ID char(7),
 txt text,
 times time,
 dates date,
-locations geometry,
+locations nvarchar(50),
 Picture image,
-music nvarchar(MAX),
-files nvarchar(MAX),
-video nvarchar(MAX)
+music nvarchar(200),
+files nvarchar(200),
+video nvarchar(200)
 
 FOREIGN KEY(Sender_ID) REFERENCES Sender(Contact_ID),
 FOREIGN KEY(Chat_ID) REFERENCES Chat(Chat_ID)
@@ -189,13 +190,47 @@ ON DELETE NO ACTION   ON UPDATE CASCADE
 ALTER TABLE Has_AA
 ALTER COLUMN privilege nvarchar(15);
 
-/************************** INSERT COMMANDS (ALTER|DROP|DELETE) **************************/
---Delete Rows
---Drop Columns
---Alter Data Types
---Add New Columns
---Remove PK Constraints
+/************************** ALTER|DROP|ADD|DELETE COMMANDS **************************/
+/*** 
++ Delete Rows
++ Drop Columns
++ Alter Data Types
++ Add New Columns
++ Remove PK Constraints***/
 
+--ALTER TABLE Accessibility
+--ALTER COLUMN photo nvarchar(MAX);
+--ALTER TABLE Accessibility
+--ALTER COLUMN privilege nvarchar(15);
+--Alter Table Accessibility
+--Drop Column privilege;
+--Alter Table Accessibility
+--Drop Column recentAcc;
+--Alter Table Has_AA
+--Add privilege nvarchar(15)
+--Alter Table Has_AA
+--Add recentAcc bit
+--ALTER TABLE Chat
+--ALTER COLUMN Archive bit;
+--Delete From Contact
+--Drop Table Contact
+--ALTER TABLE Contact
+--DROP COLUMN ID;
+--Drop Table Has_AC
+--Drop Table Has_AG
+--INSERT INTO Has_AC
+--VALUES();
+--INSERT INTO Has_AG
+--VALUES();
+--ALTER TABLE Has_SM
+--DROP CONSTRAINT PK_Has_SM;
+--Alter Table Session
+--Drop Column timeStamps
+--Alter Table Session
+--Add timeStamps Datetime
+--Delete From Setting
+
+/************************** INSERT COMMANDS **************************/
 INSERT INTO Contact
 VALUES('5692101', 'Jack', 'Sparow', '09122678423', 'https://picture.com/2692101', 'Only God Can Judge Me :D'),
 	('5692102', 'Angelina', 'Joli', '09121878912', 'https://picture.com/2692102', 'No Code NO Life'),
@@ -214,6 +249,13 @@ VALUES
 ('9814523','Mosa','rezaei','09415237895','C:\Users\<9814523>\Downloads\Messanger','Mosa az kordestan 14 sale '),
 ('3652148','Alirad','radnejad','09135431289','C:\Users\<3652148>\Downloads\Messanger','Alirad az bandar abbass 17 sale '),
 ('8512452','AliSam','Samannejad','09253369854','C:\Users\<8512452>\Downloads\Messanger','AliSam az tabriz 36 sale ');
+INSERT INTO Contact VALUES
+('0193003','Tarane','Hemmati','09199125808','@taranePic','بی تو مهتاب شبی باز از آن کوچه گذشتم...'),
+('0167256','Sohraab','KHP','09352619104','@sohraabPic','Mashtiye, Mese Khoete'),
+('3810238','Bardiya','Poorsina','09109041672','@ProfilePic','Master of my sea'),
+('0138492','Amin','Sabour','09122381902','@aminPic','dr.Sabour'),
+('0187236','Omman','Sajjadi','09121829201','@flowerPic','Civil Engineer');
+
 
 INSERT INTO Users
 VALUES('1569547'),('1364758'),('5896547'),('3654852'),('9814523'),('3652148'),('8512452');
@@ -225,6 +267,12 @@ VALUES
 	('5692104'),
 	('5692105'),
 	('5692106');
+INSERT INTO Users VALUES
+('9080331'),
+('9021546'),
+('6575231'),
+('0923671'),
+('0961247');
 
 INSERT INTO Contact_Of_User
 VALUES
@@ -251,6 +299,12 @@ VALUES
 	('5692106', '5692106'),
 	('5692104', '5692105'),
 	('5692105', '5692104');
+INSERT INTO Contact_Of_User Values
+('0193003','9080331'),
+('0167256','6575231'),
+('3810238','9021546'),
+('0138492','0923671'),
+('0187236','0961247');
 
 INSERT INTO Setting
 VALUES
@@ -269,6 +323,9 @@ VALUES
 	('#Set123', 'C:\Users\5692105\Downloads\Messanger', '00:00:45', 'Wifi', '852565', 65, '9889789123654'),
 	('#Set124', 'C:\Users\5692106\Downloads\Messanger', '00:05:00', 'Wifi', '789134', 70, '78917891852369'),
 	('#Set125', 'C:\Users\5692102\Downloads\Messanger', '00:00:45', 'Wifi', '112233', 1, '8523691236547');
+INSERT INTO Setting VALUES 
+('0001116','C:\Users\0001116\Downloads\Messanger','00:01:00','Wifi','902134',90,'09po8123rt34'),
+('0912309','C:\Users\09123091\Downloads\Messanger','00:30:00','Data','3390122',50,'pass90812064131');
 
 INSERT INTO Session
 VALUES
@@ -287,94 +344,158 @@ VALUES
 	('#Ses004', '5692104', '#Set123', GETDATE(), '192.168.13.1', 'Xiaomi Mi10 Pro'),
 	('#Ses005', '5692105', '#Set124', GETDATE(), '192.168.22.1', 'Huawei Mate 10'),
 	('#Ses006', '5692106', '#Set125', GETDATE(), '192.168.91.1', 'Xiaomi redmi note 8');
+INSERT INTO Session VAlUES
+('1629016','9021546','0001116','2014-09-11 02:30:51','253.245.183.167','Iphon5,iOS,14.4'),
+('7190638','9080331','0912309','2017-08-21 05:41:33','210.133.240.125','Samsung,A12,10.2');
 
 
---ALTER TABLE Accessibility
---ALTER COLUMN photo nvarchar(MAX);
---ALTER TABLE Accessibility
---ALTER COLUMN privilege nvarchar(15);
+INSERT INTO Admin
+VALUES('1569547'),('5896547'),('9814523'),('8512452');
+INSERT INTO Admin
+VALUES('5692103'), ('5692102'), ('5692104');
+INSERT INTO Admin VALUES
+('0193003'),
+('0167256'),
+('0138492'),
+('3810238'),
+('0187236');
 
 INSERT INTO Accessibility
 VALUES
-	('1111111', '#change', 'Music jadid Mikhay? -> Bemon To channel', 'https://Messanger/joinchannel/l6AOabsCylFBlMzNk', 'Owner', 1),
-	('2222222', '#change', '- United State OF TehranKaraj -', 'https://Messanger/joinchannel/k2ZOgfbTCylLQlTvHo', 'Owner', 0);
+('9885412','https://picture.com/Dota2BestPlayers','Best Iran Dota2 Players Replays','https://Messanger/joinchannel/l6AOabsCylFBlMKFSA'),
+('3256489','https://picture.com/ICSBestPlayers','Best Iran CS Players Replays','https://Messanger/joinchannel/S5D8G4G5DGH2H5D5G'),
+('1145699','https://picture.com/GP_MathIkani','Group Riyazi 98 Ostad Ikani','https://Messanger/joinchannel/SG8H4DN2V5H6FF'),
+('2848569','https://picture.com/FreelancersHangout','Freelancers Hangout','https://Messanger/joinchannel/AA7S8DGGGD8FAS6D');
+INSERT INTO Accessibility
+VALUES
+	('1111111', 'https://picture.com/gpMusic', 'Music jadid Mikhay? -> Bemon To channel', 'https://Messanger/joinchannel/l6AOabsCylFBlMzNk'),
+	('2222222', 'https://picture.com/USTK', '- United State OF TehranKaraj -', 'https://Messanger/joinchannel/k2ZOgfbTCylLQlTvHo');
+INSERT INTO Accessibility VALUES 
+('9230152',null,'dorehami khoban','https://messanger.join/omjdrt'),
+('7316092','https://picture.com/LatinMusic','موزیکای لاتین خفن داریم','https://messanger.join/opvty7S8DGGG'),
+('9120561','https://picture.com/UniqueFathers','کانال پدران نمونه','https://messanger.join/kjblyggfbTCy'),
+('4123893',null,'مقاومت مصالح استاد سجادی','https://messanger.join/gfbTCykjmdrdf');
 
---Alter Table Accessibility
---Drop Column privilege;
---Alter Table Accessibility
---Drop Column recentAcc;
---Alter Table Has_AA
---Add privilege nvarchar(15)
---Alter Table Has_AA
---Add recentAcc bit
+INSERT INTO Chat
+VALUES
+('5648521',1),
+('1243658',0),
+('7841256',0),
+('9856147',1),
+('2549653',1),
+('5556987',0),
+('2245887',1);
+INSERT INTO Chat
+VALUES
+	('1000000', 0),
+	('2000000', 1),
+	('3000000', 0);
+INSERT INTO Chat VALUES
+('8821547', 1),
+('9021376', 0),
+('1208195', 1),
+('9931673', 1),
+('6429810', 0),
+('9023156', 0);
 
-INSERT INTO Admin
-VALUES('5692103'), ('5692102'), ('5692104');
+INSERT INTO Channel
+VALUES
+('9856147','9885412','Iran Dota'),
+('2549653','3256489','CS baz');
+INSERT INTO Channel
+VALUES('2000000', '1111111', '-_MUSIC_-');
+INSERT INTO Channel VALUES
+('1208195','7316092','Latinooo'),
+('9931673','9120561','Tarbiyate farzand');
 
+
+INSERT INTO Groups
+VALUES
+('5556987','1145699','Math-98'),
+('2245887','2848569','FreeLancer Guys');
+INSERT INTO Groups
+VALUES('3000000', '2222222', '|-TEHKAJ-|');
+INSERT INTO Groups VALUES
+('6429810','9230152','3 dadash'),
+('9023156','4123893','درس مقاومت مصالح');
+
+
+INSERT INTO PV
+VALUES
+('5648521'),
+('1243658'),
+('7841256');
+INSERT INTO PV
+VALUES
+	('1000000');
+INSERT INTO PV VALUES 
+('8821547'),
+('9021376');
+
+INSERT INTO Saved_Message
+VALUES
+('1111222','1569547'),('2222111','3652148');
+INSERT INTO Saved_Message
+VALUES
+	('#C00001', '5692101'),
+	('#C00002', '5692102'),
+	('#C00003', '5692103'),
+	('#C00004', '5692104'),
+	('#C00005', '5692105'),
+	('#C00006', '5692106');
+INSERT INTO Saved_Message VALUES
+('4231768','9080331'),
+('3467110','6575231');
+
+INSERT INTO Call
+VALUES
+('1569547','5896547','2021-11-05 16:10:02','Voice'),
+('9814523','3652148','2020-05-15 00:23:15','Video');
 INSERT INTO Call
 VALUES
 	('5692106', '5692104', GetDate(), 'Video'),
 	('5692105', '5692104', GetDate(), 'Video'),
 	('5692101', '5692102', GetDate(), 'Voice');
+	INSERT INTO Call VALUES
+('3810238','9021546','2019-04-11 10:17:43','video'),
+('0193003','9080331','2019-04-11 10:17:43','video');
 
-INSERT INTO Channel
-VALUES('2000000', '1111111', '-_MUSIC_-');
-
-ALTER TABLE Chat
-ALTER COLUMN Archive bit;
-
-INSERT INTO Chat
-VALUES
-	('1000000', 0),
-	('2000000', 1);
-Insert Into Chat
-Values ('3000000', 0);
-
-
-
---Delete From Contact
---Drop Table Contact
---ALTER TABLE Contact
---DROP COLUMN ID;
-
-
-INSERT INTO Contact_Of_User
-VALUES
-	('5692102', '5692103'),
-	('5692101', '5692103'),
-	('5692101', '5692106'),
-	('5692102', '5692106'),
-	('5692103', '5692106'),
-	('5692104', '5692106'),
-	('5692105', '5692106'),
-	('5692106', '5692106'),
-	('5692104', '5692105'),
-	('5692105', '5692104');
-
-INSERT INTO Groups
-VALUES('3000000', '2222222', '|-TEHKAJ-|');
 
 INSERT INTO Has_AA
+VALUES('9885412','1569547','Owner',1),('3256489','5896547','Owner',1),('1145699','9814523','Owner',1),('2848569','8512452','Owner',0);
+INSERT INTO Has_AA
 VALUES
-	('1111111', '5692103', 'Owner', '1'),
-	('2222222', '5692104', 'Admin', '0'),
-	('2222222', '5692102', 'Owner', '1');
+	('1111111', '5692103', 'Owner', 1),
+	('2222222', '5692104', 'Admin', 0),
+	('2222222', '5692102', 'Owner', 1);
+INSERT INTO Has_AA VALUES
+('9230152','3810238','admin',1),
+('7316092','0167256','Owner',0),
+('9120561','0138492','Owner',1),
+('4123893','0187236','Owner',0);
 
-Drop Table Has_AC
-Drop Table Has_AG
---INSERT INTO Has_AC
---VALUES();
---INSERT INTO Has_AG
---VALUES();
-
-ALTER TABLE Has_SM
-DROP CONSTRAINT PK_Has_SM;
-
-INSERT INTO Has_SM
+INSERT INTO Sender
 VALUES
-	('#C00003', '0MSG121'),
-	('#C00003', '0MSG122');
+('1364758'),('1569547'),('5896547'),('9814523'),('8512452');
+INSERT INTO Sender
+VALUES
+	('5692101'),
+	('5692102'),
+	('5692103'),
+	('5692104'),
+	('5692106');
+INSERT INTO Sender VALUES
+('0193003'),
+('0167256'),
+('0187236');
 
+INSERT INTO MSG
+VALUES
+('1145765','5648521','1364758','salam khobi?','14:06:10','2021-04-06',NULL,NULL,NULL,NULL,NULL),
+('9986765','9856147','1569547','best Axe player OMG!','15:26:30','2021-05-20',NULL,NULL,NULL,NULL,'C:\video\<9856147>\9986765.mp4'),
+('3336699','2549653','5896547','Head shot From BASE!','12:56:20','2021-05-18',NULL,NULL,NULL,NULL,'C:\video\<2549653>\3336699.mp4'),
+('1454741','5556987','9814523','AGHA IN SOALI KASI BALADE ?','01:22:00','2021-05-15',NULL,'C:\IMAGE\<5556987>\1454741.png',NULL,NULL,NULL),
+('5215215','2245887','8512452','source code of reddot project.','19:22:30','2021-05-12',NULL,NULL,NULL,'C:\FILES\<2245887>\5215215.png',NULL);
 INSERT INTO MSG (MSG_ID, Chat_ID, Sender_ID, txt, times, dates)
 VALUES
 	('0MSG125', '3000000', '5692106', 'Bache Karaj Bakht nmide', '11:00:42', '2021-04-04'),
@@ -388,31 +509,29 @@ VALUES
 	('0MSG123', '1000000', '5692102', 'Nokaram dadash, badkha ina dari bego biyam randash konam', '12:01:40', '2021-01-12', 'https://www.google.com/url?sa=i&url=https%3A%2F%2Fwisgoon.com%2Fpin%2F14688551%2F&psig=AOvVaw2h7jbvhflBDn9unl0RIPvt&ust=1622986855838000&source=images&cd=vfe&ved=0CAIQjRxqFwoTCMCrsLLPgPECFQAAAAAdAAAAABAP');
 Insert INTO MSG (MSG_ID, Chat_ID, Sender_ID, txt, times, dates, music)
 Values ('0MSG124', '2000000', '5692103', 'Hayedeh Hamishe Jadide!', '06:40:51', '2021-02-01', 'http://dl.sarimusic.net/1396/02/13/Old/4-01%20Shabeh%20Eshgh.mp3');
+INSERT INTO MSG VALUES
+('9080123','8821547','0193003','Bardiya jan tavalodet mobarak','09:11:31','2020-11-23',null,null,null,null,'@hbdvideo'),
+('9080321','9021376','0167256','haji dmt grm','11:50:56','2020-10-20',null,null,null,'@gifFile',null),
+('9080451','9023156','0187236','امتحان شنبه ساعت 8 صبح برگزار میشود','03:40:13','2021-11-24',null,null,null,null,null);
 
-INSERT INTO PV
-VALUES
-	('1000000');
 
-INSERT INTO Sender
-VALUES
-	('5692101'),
-	('5692102'),
-	('5692103');
-INSERT INTO Sender
-VALUES
-	('5692104'),
-	('5692106');
-
+INSERT INTO Receiver
+VALUES('1569547');
 INSERT INTO Receiver
 VALUES
 	('5692106'),
 	('5692105'),
-	('5692104');
-Insert INTO Receiver
-Values
+	('5692104'),
 	('5692102'),
 	('5692101');
+INSERT INTO Receiver VALUES
+('0193003'),
+('0167256'),
+('3810238');
 
+
+INSERT INTO Receives
+VALUES('1569547','1145765');
 Insert INTO Receives
 Values
 	('5692104', '0MSG125'),
@@ -420,26 +539,17 @@ Values
 	('5692102', '0MSG121'),
 	('5692102', '0MSG122'),
 	('5692101', '0MSG123');
+INSERT INTO Receives VALUES
+('3810238', '9080321'),
+('3810238','9080123');
 
-INSERT INTO Saved_Message
+INSERT INTO Has_SM
 VALUES
-	('#C00001', '5692101'),
-	('#C00002', '5692102'),
-	('#C00003', '5692103'),
-	('#C00004', '5692104'),
-	('#C00005', '5692105'),
-	('#C00006', '5692106');
-
-Alter Table Session
-Drop Column timeStamps
-Alter Table Session
-Add timeStamps Datetime
-
-
-
---Delete From Setting
-
-
-
-
-
+('1111222','1145765'),('2222111','9986765');
+INSERT INTO Has_SM
+VALUES
+	('#C00003', '0MSG121'),
+	('#C00003', '0MSG122');
+INSERT INTO Has_SM VALUES
+('4231768','9080123'),
+('3467110','9080321');
