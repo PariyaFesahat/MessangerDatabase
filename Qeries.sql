@@ -204,14 +204,22 @@ ALTER COLUMN photo nvarchar(MAX);
 ALTER TABLE Accessibility
 ALTER COLUMN privilege nvarchar(30);
 
-
 INSERT INTO Accessibility
 VALUES
 	('1111111', '#change', 'Music jadid Mikhay? -> Bemon To channel', 'https://Messanger/joinchannel/l6AOabsCylFBlMzNk', 'Owner', 1),
 	('2222222', '#change', '- United State OF TehranKaraj -', 'https://Messanger/joinchannel/k2ZOgfbTCylLQlTvHo', 'Owner', 0);
 
+Alter Table Accessibility
+Drop Column privilege;
+Alter Table Accessibility
+Drop Column recentAcc;
+Alter Table Has_AA
+Add privilege nvarchar(15)
+Alter Table Has_AA
+Add recentAcc bit
+
 INSERT INTO Admin
-VALUES('5692103'), ('5692102');
+VALUES('5692103'), ('5692102'), ('5692104');
 
 INSERT INTO Call
 VALUES
@@ -232,10 +240,7 @@ VALUES
 Insert Into Chat
 Values ('3000000', 0);
 
-Drop Table Contact
-ALTER TABLE Contact
-DROP COLUMN ID;
-Delete From Contact
+
 
 INSERT INTO Contact
 VALUES('5692101', 'Jack', 'Sparow', '09122678423', 'https://picture.com/2692101', 'Only God Can Judge Me :D'),
@@ -246,6 +251,11 @@ VALUES('5692101', 'Jack', 'Sparow', '09122678423', 'https://picture.com/2692101'
 	('5692106', 'Amo', 'Porang', '09215544112', 'https://picture.com/2692106', '');
 	--('5692105', 'Ali', 'Sadeghi', '09122112366', 'https://picture.com/2692105', ''),
 	--('5692103', 'Emilia', 'Clark', '09379698521', 'https://picture.com/2692103', 'No Code NO Life');
+
+Delete From Contact
+Drop Table Contact
+ALTER TABLE Contact
+DROP COLUMN ID;
 
 
 INSERT INTO Contact_Of_User
@@ -262,19 +272,28 @@ VALUES
 	('5692105', '5692104');
 
 INSERT INTO Groups
-VALUES('', '', '');
+VALUES('3000000', '2222222', '|-TEHKAJ-|');
 
 INSERT INTO Has_AA
-VALUES();
+VALUES
+	('1111111', '5692103', 'Owner', '1'),
+	('2222222', '5692104', 'Admin', '0'),
+	('2222222', '5692102', 'Owner', '1');
 
-INSERT INTO Has_AC
-VALUES();
+Drop Table Has_AC
+Drop Table Has_AG
+--INSERT INTO Has_AC
+--VALUES();
+--INSERT INTO Has_AG
+--VALUES();
 
-INSERT INTO Has_AG
-VALUES();
+ALTER TABLE Has_SM
+DROP CONSTRAINT PK_Has_SM;
 
 INSERT INTO Has_SM
-VALUES();
+VALUES
+	('#C00003', '0MSG121'),
+	('#C00003', '0MSG122');
 
 INSERT INTO MSG (MSG_ID, Chat_ID, Sender_ID, txt, times, dates)
 VALUES
@@ -309,6 +328,18 @@ VALUES
 	('5692106'),
 	('5692105'),
 	('5692104');
+Insert INTO Receiver
+Values
+	('5692102'),
+	('5692101');
+
+Insert INTO Receives
+Values
+	('5692104', '0MSG125'),
+	('5692106', '0MSG126'),
+	('5692102', '0MSG121'),
+	('5692102', '0MSG122'),
+	('5692101', '0MSG123');
 
 INSERT INTO Saved_Message
 VALUES
@@ -319,19 +350,30 @@ VALUES
 	('#C00005', '5692105'),
 	('#C00006', '5692106');
 
+Alter Table Session
+Drop Column timeStamps
+Alter Table Session
+Add timeStamps Datetime
+
 INSERT INTO Session
-VALUES();
+VALUES
+	('#Ses001', '5692101', '#Set120', '192.168.43.1', 'Sony Z1', GETDATE()),
+	('#Ses002', '5692102', '#Set121', '192.168.12.1', 'LG G3 d855', GETDATE()),
+	('#Ses003', '5692103', '#Set122', '192.168.03.1', 'Xiaomi M9t', GETDATE()),
+	('#Ses004', '5692104', '#Set123', '192.168.13.1', 'Xiaomi Mi10 Pro', GETDATE()),
+	('#Ses005', '5692105', '#Set124', '192.168.22.1', 'Huawei Mate 10', GETDATE()),
+	('#Ses006', '5692106', '#Set125', '192.168.91.1', 'Xiaomi redmi note 8', GETDATE());
 
 Delete From Setting
 
 INSERT INTO Setting (Set_ID, storage_Path, UnlockDou, usage, twoStep, sound, passcode)
 VALUES
-	('5692101', 'C:\Users\5692101\Downloads\Messanger', '00:01:00', 'Data', '908070', 60, '1245789123654'),
-	('5692103', 'C:\Users\5692103\Downloads\Messanger', '00:01:00', 'Wifi', '784565', 100, '14441789123654'),
-	('5692104', 'C:\Users\5692104\Downloads\Messanger', '00:01:00', 'Data', '741454', 90, '578918912123654'),
-	('5692105', 'C:\Users\5692105\Downloads\Messanger', '00:00:45', 'Wifi', '852565', 65, '9889789123654'),
-	('5692106', 'C:\Users\5692106\Downloads\Messanger', '00:05:00', 'Wifi', '789134', 70, '78917891852369'),
-	('5692102', 'C:\Users\5692102\Downloads\Messanger', '00:00:45', 'Wifi', '112233', 1, '8523691236547');
+	('#Set120', 'C:\Users\5692101\Downloads\Messanger', '00:01:00', 'Data', '908070', 60, '1245789123654'),
+	('#Set121', 'C:\Users\5692103\Downloads\Messanger', '00:01:00', 'Wifi', '784565', 100, '14441789123654'),
+	('#Set122', 'C:\Users\5692104\Downloads\Messanger', '00:01:00', 'Data', '741454', 90, '578918912123654'),
+	('#Set123', 'C:\Users\5692105\Downloads\Messanger', '00:00:45', 'Wifi', '852565', 65, '9889789123654'),
+	('#Set124', 'C:\Users\5692106\Downloads\Messanger', '00:05:00', 'Wifi', '789134', 70, '78917891852369'),
+	('#Set125', 'C:\Users\5692102\Downloads\Messanger', '00:00:45', 'Wifi', '112233', 1, '8523691236547');
 
 
 INSERT INTO Users (Contact_ID)
