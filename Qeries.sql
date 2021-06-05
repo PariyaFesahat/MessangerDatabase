@@ -1,4 +1,7 @@
+/************************** USE SCHEMA MESSANGER **************************/
 Use Messanger
+
+/************************** CREATE TABLE COMMANDS **************************/
 
 CREATE TABLE Users(
 Contact_ID char(7) PRIMARY KEY
@@ -6,11 +9,9 @@ Contact_ID char(7) PRIMARY KEY
 
 CREATE TABLE Accessibility(
 A_ID char(7) PRIMARY KEY,
-photo image,
+photo nvarchar(MAX),
 Descriptions nvarchar(200),
 inv_link nvarchar(MAX),
-privilege int,
-recentACC bit,
 );
 
 CREATE TABLE Setting(
@@ -29,7 +30,7 @@ passcode nvarchar(25)
 
 CREATE TABLE Chat(
 Chat_ID char(7) PRIMARY KEY,
-Archive nvarchar(MAX)
+Archive bit
 );
 
 CREATE TABLE PV(
@@ -60,8 +61,8 @@ CREATE TABLE Contact_Of_User(
 Contact_ID char(7),
 Use_ID char(7),
 
-FOREIGN KEY(Contact_ID) REFERENCES Users(COntact_ID),
-FOREIGN KEY(Use_ID) REFERENCES Contact(ID)
+FOREIGN KEY(Contact_ID) REFERENCES Contact(ID),
+FOREIGN KEY(Use_ID) REFERENCES Users(COntact_ID)
 ON DELETE NO ACTION  ON UPDATE CASCADE
 );
 
@@ -126,7 +127,7 @@ ON DELETE NO ACTION   ON UPDATE CASCADE
 );
 
 CREATE TABLE Call(
-Contact_ID char(7) PRIMARY KEY,
+Contact_ID char(7),
 Use_ID char(7),
 call_time DateTime,
 call_type nvarchar(20),
@@ -140,7 +141,7 @@ CREATE TABLE Session(
 Session_ID char(7) PRIMARY KEY,
 Use_ID char(7),
 Set_ID char(7),
-timeStamps timeStamp,
+timeStamps datetime,
 IPs nvarchar(20),
 device nvarchar(50),
 
@@ -152,7 +153,7 @@ ON DELETE NO ACTION   ON UPDATE CASCADE
 
 
 CREATE TABLE Receives(
-Receiver_ID char(7) PRIMARY KEY,
+Receiver_ID char(7),
 MSG_ID char(7),
 
 FOREIGN KEY(Receiver_ID) REFERENCES Receiver(Contact_ID),
@@ -162,27 +163,8 @@ ON DELETE NO ACTION   ON UPDATE CASCADE
 
 ------------HAS-------------
 
-CREATE TABLE Has_AC(
-Channel_ID char(7) PRIMARY KEY,
-Admin_ID char(7),
-
-FOREIGN KEY(Admin_ID) REFERENCES Admin(Contact_ID),
-FOREIGN KEY(Channel_ID) REFERENCES Channel(Chat_ID)
-ON DELETE NO ACTION   ON UPDATE CASCADE
-);
-
-
-CREATE TABLE Has_AG(
-Group_ID char(7) PRIMARY KEY,
-Admin_ID char(7),
-
-FOREIGN KEY(Admin_ID) REFERENCES Admin(Contact_ID),
-FOREIGN KEY(Group_ID) REFERENCES Groups(Chat_ID)
-ON DELETE NO ACTION   ON UPDATE CASCADE
-);
-
 CREATE TABLE Has_SM(
-Saved_ID char(7) PRIMARY KEY,
+Saved_ID char(7),
 MSG_ID char(7)
 
 FOREIGN KEY(Saved_ID) REFERENCES Saved_Message(Saved_ID),
@@ -191,32 +173,140 @@ ON DELETE NO ACTION   ON UPDATE CASCADE
 );
 
 CREATE TABLE Has_AA(
-A_ID char(7) PRIMARY KEY,
+A_ID char(7),
 Admin_ID char(7),
+privilege int,
+recentACC bit,
 
 FOREIGN KEY(A_ID) REFERENCES Accessibility(A_ID),
 FOREIGN KEY(Admin_ID) REFERENCES Admin(Contact_ID)
 ON DELETE NO ACTION   ON UPDATE CASCADE
 );
 
-ALTER TABLE Accessibility
-ALTER COLUMN photo nvarchar(MAX);
-ALTER TABLE Accessibility
-ALTER COLUMN privilege nvarchar(30);
+
+
+
+ALTER TABLE Has_AA
+ALTER COLUMN privilege nvarchar(15);
+
+/************************** INSERT COMMANDS (ALTER|DROP|DELETE) **************************/
+--Delete Rows
+--Drop Columns
+--Alter Data Types
+--Add New Columns
+--Remove PK Constraints
+
+INSERT INTO Contact
+VALUES('5692101', 'Jack', 'Sparow', '09122678423', 'https://picture.com/2692101', 'Only God Can Judge Me :D'),
+	('5692102', 'Angelina', 'Joli', '09121878912', 'https://picture.com/2692102', 'No Code NO Life'),
+	('5692103', 'Brad', 'Pit', '09135710018', 'https://picture.com/2692103', ''),
+	('5692104', 'Dare', 'Pit', '09194571697', 'https://picture.com/2692104', ''),
+	('5692105', 'Kim', 'Chon On', '09199647564', 'https://picture.com/2692105', 'Be ma Nemikhori, Heh ...'),
+	('5692106', 'Amo', 'Porang', '09215544112', 'https://picture.com/2692106', '');
+	--('5692105', 'Ali', 'Sadeghi', '09122112366', 'https://picture.com/2692105', ''),
+	--('5692103', 'Emilia', 'Clark', '09379698521', 'https://picture.com/2692103', 'No Code NO Life');
+INSERT INTO Contact
+VALUES
+('1569547','karamali','aghajani','09352148569','C:\Users\<1569547>\Downloads\Messanger','karam ali az tehran 20 sale '),
+('1364758','AmirHossein','Lotfinejad','09125421368','C:\Users\<1364758>\Downloads\Messanger','AmirHossein az shiraz 12 sale '),
+('5896547','Naser','Hosseini','09012547852','C:\Users\<5896547>\Downloads\Messanger','Naser az ghazvin 56 sale '),
+('3654852','Karim','Khajezade','09986521341','C:\Users\<3654852>\Downloads\Messanger','Karim az esfahan 22 sale '),
+('9814523','Mosa','rezaei','09415237895','C:\Users\<9814523>\Downloads\Messanger','Mosa az kordestan 14 sale '),
+('3652148','Alirad','radnejad','09135431289','C:\Users\<3652148>\Downloads\Messanger','Alirad az bandar abbass 17 sale '),
+('8512452','AliSam','Samannejad','09253369854','C:\Users\<8512452>\Downloads\Messanger','AliSam az tabriz 36 sale ');
+
+INSERT INTO Users
+VALUES('1569547'),('1364758'),('5896547'),('3654852'),('9814523'),('3652148'),('8512452');
+INSERT INTO Users (Contact_ID)
+VALUES
+	('5692101'),
+	('5692102'),
+	('5692103'),
+	('5692104'),
+	('5692105'),
+	('5692106');
+
+INSERT INTO Contact_Of_User
+VALUES
+('1569547','1364758'),
+('5896547','1364758'),
+('3654852','1364758'),
+('3652148','1364758'),
+('1364758','8512452'),
+('3652148','8512452'),
+('3654852','8512452'),
+('1569547','8512452'),
+('8512452','9814523'),
+('3654852','9814523'),
+('1569547','9814523');
+INSERT INTO Contact_Of_User
+VALUES
+	('5692102', '5692103'),
+	('5692101', '5692103'),
+	('5692101', '5692106'),
+	('5692102', '5692106'),
+	('5692103', '5692106'),
+	('5692104', '5692106'),
+	('5692105', '5692106'),
+	('5692106', '5692106'),
+	('5692104', '5692105'),
+	('5692105', '5692104');
+
+INSERT INTO Setting
+VALUES
+	('6692103', 'C:\Users\5692101\Downloads\Messanger', '00:02:00', 'Data', '254523', 60, '3636521478956'),
+	('6692105', 'C:\Users\5692101\Downloads\Messanger', '00:03:00', 'Wifi', '932215', 60, '7847458745213'),
+	('6692106', 'C:\Users\5692101\Downloads\Messanger', '00:02:00', 'Data', '251423', 20, '9874847558945'),
+	('6692107', 'C:\Users\5692101\Downloads\Messanger', '00:03:00', 'Wifi', '984215', 54, '9874584521523'),
+	('6692104', 'C:\Users\5692101\Downloads\Messanger', '00:04:00', 'Data', '631548', 36, '5485612548956'),
+	('6692101', 'C:\Users\5692101\Downloads\Messanger', '00:01:00', 'Data', '908070', 60, '1245789123654'),
+	('6692102', 'C:\Users\5692102\Downloads\Messanger', '00:00:45', 'Wifi', '963258', 60, '8523691236547');
+INSERT INTO Setting (Set_ID, storage_Path, UnlockDou, usage, twoStep, sound, passcode)
+VALUES
+	('#Set120', 'C:\Users\5692101\Downloads\Messanger', '00:01:00', 'Data', '908070', 60, '1245789123654'),
+	('#Set121', 'C:\Users\5692103\Downloads\Messanger', '00:01:00', 'Wifi', '784565', 100, '14441789123654'),
+	('#Set122', 'C:\Users\5692104\Downloads\Messanger', '00:01:00', 'Data', '741454', 90, '578918912123654'),
+	('#Set123', 'C:\Users\5692105\Downloads\Messanger', '00:00:45', 'Wifi', '852565', 65, '9889789123654'),
+	('#Set124', 'C:\Users\5692106\Downloads\Messanger', '00:05:00', 'Wifi', '789134', 70, '78917891852369'),
+	('#Set125', 'C:\Users\5692102\Downloads\Messanger', '00:00:45', 'Wifi', '112233', 1, '8523691236547');
+
+INSERT INTO Session
+VALUES
+	('1111111','1569547','6692103','2020-08-25 13:10:02','6.45.24.1','SM-K2453'),
+	('1111112','1364758','6692105','2020-03-01 13:10:02','6.45.24.1','SM-J1485'),
+	('1111113','5896547','6692106','2020-02-23 13:10:02','6.45.24.1','SM-A3697'),
+	('1111114','3654852','6692107','2020-11-12 13:10:02','6.45.24.1','SM-D2236'),
+	('1111115','9814523','6692104','2020-01-14 13:10:02','6.45.24.1','SM-F8978'),
+	('1111116','3652148','6692101','2020-05-07 13:10:02','6.45.24.1','SM-S1254'),
+	('1111117','8512452','6692102','2020-06-09 13:10:02','6.45.24.1','SM-T3333');
+INSERT INTO Session
+VALUES
+	('#Ses001', '5692101', '#Set120', GETDATE(), '192.168.43.1', 'Sony Z1'),
+	('#Ses002', '5692102', '#Set121', GETDATE(), '192.168.12.1', 'LG G3 d855'),
+	('#Ses003', '5692103', '#Set122', GETDATE(), '192.168.03.1', 'Xiaomi M9t'),
+	('#Ses004', '5692104', '#Set123', GETDATE(), '192.168.13.1', 'Xiaomi Mi10 Pro'),
+	('#Ses005', '5692105', '#Set124', GETDATE(), '192.168.22.1', 'Huawei Mate 10'),
+	('#Ses006', '5692106', '#Set125', GETDATE(), '192.168.91.1', 'Xiaomi redmi note 8');
+
+
+--ALTER TABLE Accessibility
+--ALTER COLUMN photo nvarchar(MAX);
+--ALTER TABLE Accessibility
+--ALTER COLUMN privilege nvarchar(15);
 
 INSERT INTO Accessibility
 VALUES
 	('1111111', '#change', 'Music jadid Mikhay? -> Bemon To channel', 'https://Messanger/joinchannel/l6AOabsCylFBlMzNk', 'Owner', 1),
 	('2222222', '#change', '- United State OF TehranKaraj -', 'https://Messanger/joinchannel/k2ZOgfbTCylLQlTvHo', 'Owner', 0);
 
-Alter Table Accessibility
-Drop Column privilege;
-Alter Table Accessibility
-Drop Column recentAcc;
-Alter Table Has_AA
-Add privilege nvarchar(15)
-Alter Table Has_AA
-Add recentAcc bit
+--Alter Table Accessibility
+--Drop Column privilege;
+--Alter Table Accessibility
+--Drop Column recentAcc;
+--Alter Table Has_AA
+--Add privilege nvarchar(15)
+--Alter Table Has_AA
+--Add recentAcc bit
 
 INSERT INTO Admin
 VALUES('5692103'), ('5692102'), ('5692104');
@@ -242,20 +332,10 @@ Values ('3000000', 0);
 
 
 
-INSERT INTO Contact
-VALUES('5692101', 'Jack', 'Sparow', '09122678423', 'https://picture.com/2692101', 'Only God Can Judge Me :D'),
-	('5692102', 'Angelina', 'Joli', '09121878912', 'https://picture.com/2692102', 'No Code NO Life'),
-	('5692103', 'Brad', 'Pit', '09135710018', 'https://picture.com/2692103', ''),
-	('5692104', 'Dare', 'Pit', '09194571697', 'https://picture.com/2692104', ''),
-	('5692105', 'Kim', 'Chon On', '09199647564', 'https://picture.com/2692105', 'Be ma Nemikhori, Heh ...'),
-	('5692106', 'Amo', 'Porang', '09215544112', 'https://picture.com/2692106', '');
-	--('5692105', 'Ali', 'Sadeghi', '09122112366', 'https://picture.com/2692105', ''),
-	--('5692103', 'Emilia', 'Clark', '09379698521', 'https://picture.com/2692103', 'No Code NO Life');
-
-Delete From Contact
-Drop Table Contact
-ALTER TABLE Contact
-DROP COLUMN ID;
+--Delete From Contact
+--Drop Table Contact
+--ALTER TABLE Contact
+--DROP COLUMN ID;
 
 
 INSERT INTO Contact_Of_User
@@ -355,37 +435,11 @@ Drop Column timeStamps
 Alter Table Session
 Add timeStamps Datetime
 
-INSERT INTO Session
-VALUES
-	('#Ses001', '5692101', '#Set120', '192.168.43.1', 'Sony Z1', GETDATE()),
-	('#Ses002', '5692102', '#Set121', '192.168.12.1', 'LG G3 d855', GETDATE()),
-	('#Ses003', '5692103', '#Set122', '192.168.03.1', 'Xiaomi M9t', GETDATE()),
-	('#Ses004', '5692104', '#Set123', '192.168.13.1', 'Xiaomi Mi10 Pro', GETDATE()),
-	('#Ses005', '5692105', '#Set124', '192.168.22.1', 'Huawei Mate 10', GETDATE()),
-	('#Ses006', '5692106', '#Set125', '192.168.91.1', 'Xiaomi redmi note 8', GETDATE());
-
-Delete From Setting
-
-INSERT INTO Setting (Set_ID, storage_Path, UnlockDou, usage, twoStep, sound, passcode)
-VALUES
-	('#Set120', 'C:\Users\5692101\Downloads\Messanger', '00:01:00', 'Data', '908070', 60, '1245789123654'),
-	('#Set121', 'C:\Users\5692103\Downloads\Messanger', '00:01:00', 'Wifi', '784565', 100, '14441789123654'),
-	('#Set122', 'C:\Users\5692104\Downloads\Messanger', '00:01:00', 'Data', '741454', 90, '578918912123654'),
-	('#Set123', 'C:\Users\5692105\Downloads\Messanger', '00:00:45', 'Wifi', '852565', 65, '9889789123654'),
-	('#Set124', 'C:\Users\5692106\Downloads\Messanger', '00:05:00', 'Wifi', '789134', 70, '78917891852369'),
-	('#Set125', 'C:\Users\5692102\Downloads\Messanger', '00:00:45', 'Wifi', '112233', 1, '8523691236547');
 
 
-INSERT INTO Users (Contact_ID)
-VALUES
-	('5692101'),
-	('5692102');
+--Delete From Setting
 
-INSERT INTO Users (Contact_ID)
-VALUES
-	('5692103'),
-	('5692104'),
-	('5692105'),
-	('5692106');
+
+
 
 
