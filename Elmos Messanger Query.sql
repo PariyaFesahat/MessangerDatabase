@@ -1,7 +1,7 @@
 ﻿
 /************************** USE SCHEMA MESSANGER **************************/
 --CREATE DATABASE Elmos_Messanger
---USE Messanger
+USE Elmos_Messanger
 /************************** CREATE TABLE COMMANDS **************************/
 
 CREATE TABLE Users(
