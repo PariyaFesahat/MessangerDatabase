@@ -15,6 +15,12 @@ Descriptions nvarchar(200),
 inv_link nvarchar(MAX),
 );
 
+ALTER TABLE Accessibility
+ADD CHECK (photo like 'https://%')
+
+ALTER TABLE Accessibility
+ADD CHECK (LEN(inv_link) != 0)
+
 CREATE TABLE Setting(
 Set_ID char(7) PRIMARY KEY,
 storage_Path nvarchar(MAX),
@@ -28,6 +34,11 @@ sound int
 passcode nvarchar(25)
 	CHECK(LEN(passcode) >= 12),
 );
+ALTER TABLE setting
+ADD CHECK (storage_Path Like 'C:\Users\%\Downloads\Messanger')
+
+ALTER TABLE Setting
+ADD CHECK(LEN(storage_Path) != 0)
 
 CREATE TABLE Chat(
 Chat_ID char(7) PRIMARY KEY,
@@ -57,6 +68,8 @@ phone char(11),
 profile_pic image,
 bio nvarchar(150),
 );
+ALTER TABLE Contact
+ADD CHECK (storage_Path like 'https://%')
 
 CREATE TABLE Contact_Of_User(
 Contact_ID char(7),
@@ -117,6 +130,9 @@ FOREIGN KEY(A_ID) REFERENCES Accessibility(A_ID)
 ON DELETE NO ACTION   ON UPDATE CASCADE
 );
 
+ALTER TABLE Channel
+ADD CHECK(LEN(ch_name) != 0)
+
 CREATE TABLE Groups(
 Chat_ID char(7) PRIMARY KEY,
 A_ID char(7),
@@ -126,6 +142,8 @@ FOREIGN KEY(Chat_ID) REFERENCES Chat(Chat_ID),
 FOREIGN KEY(A_ID) REFERENCES Accessibility(A_ID)
 ON DELETE NO ACTION   ON UPDATE CASCADE
 );
+ALTER TABLE Groups
+ADD CHECK(LEN(G_Name) != 0)
 
 CREATE TABLE Call(
 Contact_ID char(7),
@@ -137,6 +155,9 @@ fOREIGN KEY(USE_ID) REFERENCES Users(CONTACT_ID),
 fOREIGN KEY(Contact_ID) REFERENCES Contact(ID)
 ON DELETE NO ACTION   ON UPDATE CASCADE
 );
+
+ALTER TABLE Call
+ADD CHECK(call_type = 'Video' OR call_Type = 'Voice')
 
 CREATE TABLE Session(
 Session_ID char(7) PRIMARY KEY,
