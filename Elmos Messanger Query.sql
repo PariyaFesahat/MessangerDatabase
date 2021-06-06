@@ -646,3 +646,24 @@ WHERE chat_id =(SELECT M.chat_id
 				GROUP BY M.chat_id,M.member_id
 				HAVING COUNT(*)>=2)
 SET ROWCOUNT 0
+
+
+/******************QUERY**************/
+SELECT DISTINCT s.sound, cu.Contact_ID
+FROM Members as m, Contact_Of_User as cu, Users as u, Session as se, setting as s
+WHERE m.chat_id = '2000000' AND cu.Contact_ID = m.member_id AND u.Contact_ID = cu.Use_ID AND 
+se.Use_ID = u.Contact_ID AND s.Set_ID = se.Set_ID
+
+SELECT Set_Id, s.twoStep
+FROM Setting as s
+WHERE 13 < LEN(s.passcode)
+
+SELECT top(3) c.Ch_name, a.inv_link, COUNT(m.member_id) as members
+FROM Members as m , Channel as c, Accessibility as a
+WHERE c.Chat_ID = m.chat_id AND a.A_ID = c.A_ID
+GROUP BY c.Ch_name,a.inv_link,m.chat_id
+ORDER BY COUNT(m.member_id) desc
+
+SELECT a.Descriptions, c.bio, c.F_Name, c.L_Name
+FROM Contact as c, Accessibility as a, HAS_AA as h , admin as ad
+WHERE h.A_ID = a.A_ID AND ad.Contact_ID = h.Admin_ID AND c.ID = ad.Contact_ID
