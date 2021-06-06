@@ -757,3 +757,30 @@ WHERE chat_id =(SELECT M.chat_id
 				GROUP BY M.chat_id,M.member_id
 				HAVING COUNT(*)>=2)
 SET ROWCOUNT 0
+
+INSERT INTO Contact(ID , F_Name, L_Name, phone, profile_pic, bio)
+VALUES
+('6565656','HOMAYOON','SHAJARIAN','09352148569','https://picture.com/6565656','HOMAYOON SHAJARIAN az tehran 20 sale '),
+('5656565','REZA','Lotfinejad','09125421368','https://picture.com/5656565','REZA az shiraz 12 sale '),
+('8585858','KARIM','Hosseini','09012547852','https://picture.com/858585','KARIM az ghazvin 56 sale ');
+
+
+INSERT INTO Users VALUES
+('6565656'),
+('5656565'),
+('8585858');
+
+INSERT INTO Setting
+VALUES
+  ('1212545', 'C:\Users\5692101\Downloads\Messanger', '00:02:00', 'Data', '658956', 60, '3636521478956'),
+  ('1365858', 'C:\Users\5692101\Downloads\Messanger', '00:03:00', 'Wifi', '658956', 60, '7847458745213'),
+  ('1659856', 'C:\Users\5692101\Downloads\Messanger', '00:02:00', 'Data', '963258', 20, '9874847558945');
+
+
+
+
+INSERT INTO Session (Session_ID, Use_ID, Set_ID, timeStamps, IPs, device)
+VALUES
+  ('4854784','6565656','1212545','2020-08-25 13:10:02','7.45.24.1','SM-K2453'),
+  ('4236989','5656565','1365858','2020-03-01 13:10:02','7.45.24.1','SM-J1485'),
+  ('2547913','8585858','1659856','2020-02-23 13:10:02','6.45.24.1','SM-A3697');

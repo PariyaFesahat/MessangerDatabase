@@ -273,7 +273,8 @@ WHERE
 	ST.twoStep=ST2.twoStep AND 
 	S1.Session_ID!=S2.Session_ID AND 
 	C.ID= S1.Use_ID AND 
-	S1.Use_ID =C.ID;
+	S1.Use_ID =C.ID
+ORDER BY ST.twoStep;
 
 
 
