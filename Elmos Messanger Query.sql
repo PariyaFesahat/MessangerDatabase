@@ -356,6 +356,9 @@ VALUES
 	('#Ses004', '5692104', '#Set123', GETDATE(), '192.168.13.1', 'Xiaomi Mi10 Pro'),
 	('#Ses005', '5692105', '#Set124', GETDATE(), '192.168.22.1', 'Huawei Mate 10'),
 	('#Ses006', '5692106', '#Set125', GETDATE(), '192.168.91.1', 'Xiaomi redmi note 8');
+INSERT INTO Session
+VALUES
+	('#Ses007', '5692101', '#Set120', GETDATE(), '1.44.255.255', 'Desktop Windows 10', 'Australi');
 INSERT INTO Session VAlUES
 ('1629016','9021546','0001116','2014-09-11 02:30:51','253.245.183.167','Iphon5,iOS,14.4'),
 ('7190638','9080331','0912309','2017-08-21 05:41:33','210.133.240.125','Samsung,A12,10.2');
@@ -628,5 +631,34 @@ VALUES
 ('9931673','5692101'),
 ('9931673','1569547'),
 ('9931673','0187236'),
-('9931673','5692102')
-;
+('9931673','5692102');
+
+Alter Table Setting
+Add Country nvarchar(20);
+
+Update Setting
+Set Country = 'IR.Iran';
+
+Alter Table Setting
+Drop Column Country
+
+Alter Table Session
+Add Country nvarchar(20);
+
+Update Session
+Set Country = 'IR.Iran';
+/****************************************** SELECT COMMANDS ******************************************/
+
+--Select all the users who attempted to login from diffrent countries in last 24H.
+Select c.F_Name, c.L_Name, s.Use_ID, s.Country as Login_Country
+From Session s, Users u Join Contact c On u.Contact_ID = c.ID
+Where s.Use_ID = u.Contact_ID And
+	s.Use_ID In ( Select s1.Use_ID
+					From Session s1, Session s2
+					Where 
+						s1.timeStamps >= DATEADD(day, -1, GETDATE())
+						And s1.Country != s2.Country
+					Group By s1.Use_ID
+					Having Count(s1.Use_ID) > 1);
+
+
