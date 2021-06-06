@@ -63,14 +63,21 @@ profile_pic nvarchar(150),
 bio nvarchar(150),
 );
 
+ALTER TABLE Contact
+ADD CHECK(phone LIKE '09%');
+
 CREATE TABLE Contact_Of_User(
 Contact_ID char(7),
 Use_ID char(7),
+IsBlock bit Default 0,
 
 FOREIGN KEY(Contact_ID) REFERENCES Contact(ID),
 FOREIGN KEY(Use_ID) REFERENCES Users(COntact_ID)
 ON DELETE NO ACTION  ON UPDATE CASCADE
 );
+
+ALTER TABLE Contact_Of_User
+ADD CHECK (Contact_ID != Use_ID)
 
 CREATE TABLE Sender(
 Contact_ID char(7) PRIMARY KEY,
@@ -112,6 +119,14 @@ FOREIGN KEY(Chat_ID) REFERENCES Chat(Chat_ID)
 ON DELETE NO ACTION   ON UPDATE CASCADE
 );
 
+--CREATE FUNCTION GETReceiver(@MSG_ID CHAR(7))  
+-- RETURNS CHAR(7)  
+-- AS  
+--BEGIN  
+--    RETURN (SELECT Receiver_ID  FROM Receives WHERE MSG_ID=@MSG_ID)  
+--END 
+
+
 CREATE TABLE Channel(
 Chat_ID char(7) PRIMARY KEY,
 A_ID char(7),
@@ -122,6 +137,11 @@ FOREIGN KEY(A_ID) REFERENCES Accessibility(A_ID)
 ON DELETE NO ACTION   ON UPDATE CASCADE
 );
 
+Alter Table Channel
+Add Constraint NN__Channel__Ch_name__NotNULL
+Check (Channel.Ch_name Is Not Null);
+
+
 CREATE TABLE Groups(
 Chat_ID char(7) PRIMARY KEY,
 A_ID char(7),
@@ -131,6 +151,10 @@ FOREIGN KEY(Chat_ID) REFERENCES Chat(Chat_ID),
 FOREIGN KEY(A_ID) REFERENCES Accessibility(A_ID)
 ON DELETE NO ACTION   ON UPDATE CASCADE
 );
+
+Alter Table Groups
+Add Constraint NN__Groups__G_name__NotNULL
+Check (Groups.G_name Is Not Null);
 
 CREATE TABLE Call(
 Contact_ID char(7),
@@ -143,6 +167,25 @@ fOREIGN KEY(Contact_ID) REFERENCES Contact(ID)
 ON DELETE NO ACTION   ON UPDATE CASCADE
 );
 
+Alter Table Call
+Add Constraint NN__Call__Contact_ID__NotNULL
+Check (Call.Contact_ID Is Not Null);
+
+Alter Table Call
+Add Constraint NN__Call__Use_ID__NotNULL
+Check (Call.Use_ID Is Not Null);
+
+Alter Table Call
+Add Constraint NN__Call__call_type__NotNULL
+Check (Call.call_type Is Not Null);
+
+Alter Table Call
+Add Constraint NN__Call__call_type__Choices
+Check (Call.call_type = 'Video' Or Call.call_type = 'Voice');
+
+ALTER TABLE Call
+ADD CHECK(Contact_ID!=Use_ID)
+
 CREATE TABLE Session(
 Session_ID char(7) PRIMARY KEY,
 Use_ID char(7),
@@ -150,12 +193,18 @@ Set_ID char(7),
 timeStamps datetime,
 IPs nvarchar(20),
 device nvarchar(50),
+Country nvarchar(30),
 
 FOREIGN KEY(Use_ID) REFERENCES Users(Contact_ID),
 FOREIGN KEY(Set_ID) REFERENCES Setting(Set_ID)
 ON DELETE NO ACTION   ON UPDATE CASCADE
 );
 
+ALTER TABLE Session
+ADD CHECK(Country != 'USA' AND Country!='Israeil')
+
+ALTER TABLE Session
+ADD CHECK(IPs LIKE '%.%.%.%')
 
 
 CREATE TABLE Receives(
@@ -178,6 +227,9 @@ FOREIGN KEY(chat_id) REFERENCES Chat(Chat_id),
 FOREIGN KEY(member_id) REFERENCES Contact(ID)
 ON DELETE NO ACTION   ON UPDATE CASCADE
 );
+
+--ALTER TABLE MSG
+--ADD CHECK(Sender_ID!= [dbo].GETReceiver(MSG_ID))
 
 ------------HAS-------------
 
@@ -273,6 +325,10 @@ INSERT INTO Contact VALUES
 ('0138492','Amin','Sabour','09122381902','@aminPic','dr.Sabour'),
 ('0187236','Omman','Sajjadi','09121829201','@flowerPic','Civil Engineer');
 
+Update Contact
+Set profile_pic = 'https://picture.com/' + Contact.ID
+Where profile_pic Like '@%' or profile_pic Like 'C%';
+
 
 INSERT INTO Users
 VALUES('1569547'),('1364758'),('5896547'),('3654852'),('9814523'),('3652148'),('8512452');
@@ -291,7 +347,7 @@ INSERT INTO Users VALUES
 ('0923671'),
 ('0961247');
 
-INSERT INTO Contact_Of_User
+INSERT INTO Contact_Of_User (Contact_ID, Use_ID)
 VALUES
 ('1569547','1364758'),
 ('5896547','1364758'),
@@ -304,7 +360,7 @@ VALUES
 ('8512452','9814523'),
 ('3654852','9814523'),
 ('1569547','9814523');
-INSERT INTO Contact_Of_User
+INSERT INTO Contact_Of_User (Contact_ID, Use_ID)
 VALUES
 	('5692102', '5692103'),
 	('5692101', '5692103'),
@@ -313,21 +369,21 @@ VALUES
 	('5692103', '5692106'),
 	('5692104', '5692106'),
 	('5692105', '5692106'),
-	('5692106', '5692106'),
 	('5692104', '5692105'),
 	('5692105', '5692104');
-INSERT INTO Contact_Of_User Values
-('0193003','9080331'),
-('0167256','6575231'),
-('3810238','9021546'),
-('0138492','0923671'),
-('0187236','0961247');
+INSERT INTO Contact_Of_User (Contact_ID, Use_ID)
+Values
+	('0193003','9080331'),
+	('0167256','6575231'),
+	('3810238','9021546'),
+	('0138492','0923671'),
+	('0187236','0961247');
 Delete From Contact_Of_User
 Where Contact_Of_User.Contact_ID = Contact_Of_User.Use_ID
 
-ALTER TABLE Contact_Of_User
-ADD IsBlock bit Not Null 
-CONSTRAINT IsBlockDefault DEFAULT 0
+--ALTER TABLE Contact_Of_User
+--ADD IsBlock bit Not Null 
+--CONSTRAINT IsBlockDefault DEFAULT 0
 
 Update Contact_Of_User
 Set IsBlock = 1
@@ -366,7 +422,7 @@ Update Setting
 Set Setting.sound = 0
 Where Setting.sound = 1
 
-INSERT INTO Session
+INSERT INTO Session (Session_ID, Use_ID, Set_ID, timeStamps, IPs, device)
 VALUES
 	('1111111','1569547','6692103','2020-08-25 13:10:02','6.45.24.1','SM-K2453'),
 	('1111112','1364758','6692105','2020-03-01 13:10:02','6.45.24.1','SM-J1485'),
@@ -375,7 +431,7 @@ VALUES
 	('1111115','9814523','6692104','2020-01-14 13:10:02','6.45.24.1','SM-F8978'),
 	('1111116','3652148','6692101','2020-05-07 13:10:02','6.45.24.1','SM-S1254'),
 	('1111117','8512452','6692102','2020-06-09 13:10:02','6.45.24.1','SM-T3333');
-INSERT INTO Session
+INSERT INTO Session (Session_ID, Use_ID, Set_ID, timeStamps, IPs, device)
 VALUES
 	('#Ses001', '5692101', '#Set120', GETDATE(), '192.168.43.1', 'Sony Z1'),
 	('#Ses002', '5692102', '#Set121', GETDATE(), '192.168.12.1', 'LG G3 d855'),
@@ -384,11 +440,12 @@ VALUES
 	('#Ses005', '5692105', '#Set124', GETDATE(), '192.168.22.1', 'Huawei Mate 10'),
 	('#Ses006', '5692106', '#Set125', GETDATE(), '192.168.91.1', 'Xiaomi redmi note 8');
 
-INSERT INTO Session VAlUES
-('1629016','9021546','0001116','2014-09-11 02:30:51','253.245.183.167','Iphon5,iOS,14.4'),
-('7190638','9080331','0912309','2017-08-21 05:41:33','210.133.240.125','Samsung,A12,10.2');
-Alter Table Session
-Add Country nvarchar(20);
+INSERT INTO Session (Session_ID, Use_ID, Set_ID, timeStamps, IPs, device)
+VAlUES
+	('1629016','9021546','0001116','2014-09-11 02:30:51','253.245.183.167','Iphon5,iOS,14.4'),
+	('7190638','9080331','0912309','2017-08-21 05:41:33','210.133.240.125','Samsung,A12,10.2');
+--Alter Table Session
+--Add Country nvarchar(20);
 
 Update Session
 Set Country = 'IR.Iran';
@@ -689,3 +746,4 @@ Set Country = 'IR.Iran';
 
 Alter Table Setting
 Drop Column Country
+
