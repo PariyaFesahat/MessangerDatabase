@@ -29,6 +29,11 @@ passcode nvarchar(25)
 	CHECK(LEN(passcode) >= 12),
 );
 
+Alter Table Setting
+Drop Constraint CK__Setting__sound__2A4B4B5E
+Alter Table Setting
+Add Constraint CK__Setting__sound__SoundRange Check (sound >= 0 AND sound <= 100)
+
 CREATE TABLE Chat(
 Chat_ID char(7) PRIMARY KEY,
 Archive bit
@@ -54,7 +59,7 @@ ID char(7) PRIMARY KEY,
 F_Name nvarchar(50),
 L_Name nvarchar(50),
 phone char(11),
-profile_pic image,
+profile_pic nvarchar(150),
 bio nvarchar(150),
 );
 
@@ -317,6 +322,24 @@ INSERT INTO Contact_Of_User Values
 ('3810238','9021546'),
 ('0138492','0923671'),
 ('0187236','0961247');
+Delete From Contact_Of_User
+Where Contact_Of_User.Contact_ID = Contact_Of_User.Use_ID
+
+ALTER TABLE Contact_Of_User
+ADD IsBlock bit Not Null 
+CONSTRAINT IsBlockDefault DEFAULT 0
+
+Update Contact_Of_User
+Set IsBlock = 1
+Where Contact_Of_User.Contact_ID = '5692104'
+
+Update Contact_Of_User
+Set IsBlock = 0
+Where Contact_Of_User.Contact_ID = '5692104'
+
+Update Contact_Of_User
+Set IsBlock = 1
+Where Contact_Of_User.Contact_ID = '5692105'
 
 INSERT INTO Setting
 VALUES
@@ -339,6 +362,10 @@ INSERT INTO Setting VALUES
 ('0001116','C:\Users\0001116\Downloads\Messanger','00:01:00','Wifi','902134',90,'09po8123rt34'),
 ('0912309','C:\Users\09123091\Downloads\Messanger','00:30:00','Data','3390122',50,'pass90812064131');
 
+Update Setting
+Set Setting.sound = 0
+Where Setting.sound = 1
+
 INSERT INTO Session
 VALUES
 	('1111111','1569547','6692103','2020-08-25 13:10:02','6.45.24.1','SM-K2453'),
@@ -356,13 +383,19 @@ VALUES
 	('#Ses004', '5692104', '#Set123', GETDATE(), '192.168.13.1', 'Xiaomi Mi10 Pro'),
 	('#Ses005', '5692105', '#Set124', GETDATE(), '192.168.22.1', 'Huawei Mate 10'),
 	('#Ses006', '5692106', '#Set125', GETDATE(), '192.168.91.1', 'Xiaomi redmi note 8');
-INSERT INTO Session
-VALUES
-	('#Ses007', '5692101', '#Set120', GETDATE(), '1.44.255.255', 'Desktop Windows 10', 'Australi');
+
 INSERT INTO Session VAlUES
 ('1629016','9021546','0001116','2014-09-11 02:30:51','253.245.183.167','Iphon5,iOS,14.4'),
 ('7190638','9080331','0912309','2017-08-21 05:41:33','210.133.240.125','Samsung,A12,10.2');
+Alter Table Session
+Add Country nvarchar(20);
 
+Update Session
+Set Country = 'IR.Iran';
+
+INSERT INTO Session
+VALUES
+	('#Ses007', '5692101', '#Set120', GETDATE(), '1.44.255.255', 'Desktop Windows 10', 'Australi');
 
 INSERT INTO Admin
 VALUES('1569547'),('5896547'),('9814523'),('8512452');
@@ -633,6 +666,7 @@ VALUES
 ('9931673','0187236'),
 ('9931673','5692102');
 
+
 Alter Table Setting
 Add Country nvarchar(20);
 
@@ -642,16 +676,11 @@ Set Country = 'IR.Iran';
 Alter Table Setting
 Drop Column Country
 
-Alter Table Session
-Add Country nvarchar(20);
-
-Update Session
-Set Country = 'IR.Iran';
 /****************************************** SELECT COMMANDS ******************************************/
 
---Select all the users who attempted to login from diffrent countries in last 24H.
+-- (BAD USER) Select All The Users Who Attempted To Login From Diffrent Countries in Last 24H.
 Select c.F_Name, c.L_Name, s.Use_ID, s.Country as Login_Country
-From Session s, Users u Join Contact c On u.Contact_ID = c.ID
+From Session as s, Users as u Join Contact as c On u.Contact_ID = c.ID
 Where s.Use_ID = u.Contact_ID And
 	s.Use_ID In ( Select s1.Use_ID
 					From Session s1, Session s2
@@ -661,4 +690,83 @@ Where s.Use_ID = u.Contact_ID And
 					Group By s1.Use_ID
 					Having Count(s1.Use_ID) > 1);
 
+--Contact List of Each User
+Select cu.Use_ID, cu.Contact_ID
+From Contact_Of_User as cu
+where cu.Use_ID = '5692106';
 
+
+--Mutual Contatc of Users
+Select cu1.Use_ID
+From Contact_Of_User as cu1, Contact_Of_User as cu2
+Where 
+	cu1.Contact_ID = cu2.Use_ID And 
+	cu2.Contact_ID = cu1.Use_ID
+Order By cu1.Use_ID;
+
+
+--Common Groups and Channels Between Mutual Contacts
+Select Distinct m1.chat_id, cu1.Use_ID as Member_1, cu2.Use_ID as Member_2
+From 
+	Contact_Of_User as cu1, Contact_Of_User as cu2,
+	Members as m1, PV as pv
+Where 
+	cu1.Contact_ID = cu2.Use_ID And 
+	cu2.Contact_ID = cu1.Use_ID And
+	m1.chat_id Not In (	Select pv.Chat_ID)
+	And
+	cu1.Use_ID in (	Select m.member_id
+						From Members as m
+						Where m.chat_id = m1.chat_id)
+	And
+	cu2.Use_ID in (	Select m.member_id
+						From Members as m
+						Where m.chat_id = m1.chat_id)
+Order By Member_1, Member_2 Asc;
+
+--Mutual Users Between Diffrenet Groups
+Select Distinct m1.chat_id, m2.chat_id, m1.member_id as Member_1, m2.member_id as Member_2
+From 
+	Members as m1, Members as m2, PV as pv
+Where 
+	m1.chat_id != m2.chat_id And
+	m1.chat_id Not In (	Select pv.Chat_ID)
+	And
+	m2.chat_id Not In (	Select pv.Chat_ID)
+	And
+	m1.member_id in (	Select m.member_id
+						From Members as m
+						Where m.chat_id = m2.chat_id)
+	And
+	m2.member_id in (	Select m.member_id
+						From Members as m
+						Where m.chat_id = m1.chat_id);
+
+-- (BAD USER) Users Who Have Been Blocked More Than The Average Blocks Between All Users.
+Select *
+From Contact As c
+Where c.ID In (	Select Distinct cu.Contact_ID
+				From Contact_Of_User cu
+				Where  
+						(Select Count(*)
+						From Contact_Of_User As cu2
+						Where cu2.IsBlock = 1)
+						/
+						(Select Count(*)
+						From Contact_Of_User As cu1)
+						<
+						(	Select Top 1 Count(cu1.IsBlock) As NumberOfBlocks
+							From Contact_Of_User cu1
+							Where cu1.Contact_ID = cu.Contact_ID
+							Group By cu1.Contact_ID, cu1.IsBlock Having cu1.IsBlock = 1
+							Order By NumberOfBlocks Desc))
+
+
+--The Country With The Most Percentage of Muting -> Country With No Asab!
+Select 
+	Ses.Country, (Count(Ses.Country) * 100 / (Select Count(*) From Setting As s1)) As Percentage
+From 
+	Setting As S Inner Join Session As Ses 
+	On S.Set_ID = Ses.Set_ID
+Group By  S.sound, Ses.Country
+Having S.sound = 0;
