@@ -15,6 +15,12 @@ Descriptions nvarchar(200),
 inv_link nvarchar(MAX),
 );
 
+ALTER TABLE Accessibility
+ADD CHECK (photo like 'https://%')
+
+ALTER TABLE Accessibility
+ADD CHECK (LEN(inv_link) != 0)
+
 CREATE TABLE Setting(
 Set_ID char(7) PRIMARY KEY,
 storage_Path nvarchar(MAX),
@@ -23,14 +29,18 @@ usage char(4)
 	CHECK(usage = 'Wifi' OR usage = 'Data'),
 twoStep nvarchar(MAX)
 	CHECK(LEN(twoStep) >= 4),
-sound int
-	CHECK(sound >= 1 AND sound <= 100),
+sound int,
 passcode nvarchar(25)
 	CHECK(LEN(passcode) >= 12),
 );
+ALTER TABLE setting
+ADD CHECK (storage_Path Like 'C:\Users\%\Downloads\Messanger')
 
-Alter Table Setting
-Drop Constraint CK__Setting__sound__2A4B4B5E
+ALTER TABLE Setting
+ADD CHECK(LEN(storage_Path) != 0)
+
+--Alter Table Setting
+--Drop Constraint CK__Setting__sound__2A4B4B5E
 Alter Table Setting
 Add Constraint CK__Setting__sound__SoundRange Check (sound >= 0 AND sound <= 100)
 
@@ -62,6 +72,7 @@ phone char(11),
 profile_pic nvarchar(150),
 bio nvarchar(150),
 );
+
 
 ALTER TABLE Contact
 ADD CHECK(phone LIKE '09%');
@@ -137,6 +148,9 @@ FOREIGN KEY(A_ID) REFERENCES Accessibility(A_ID)
 ON DELETE NO ACTION   ON UPDATE CASCADE
 );
 
+ALTER TABLE Channel
+ADD CHECK(LEN(ch_name) != 0)
+
 Alter Table Channel
 Add Constraint NN__Channel__Ch_name__NotNULL
 Check (Channel.Ch_name Is Not Null);
@@ -151,6 +165,8 @@ FOREIGN KEY(Chat_ID) REFERENCES Chat(Chat_ID),
 FOREIGN KEY(A_ID) REFERENCES Accessibility(A_ID)
 ON DELETE NO ACTION   ON UPDATE CASCADE
 );
+ALTER TABLE Groups
+ADD CHECK(LEN(G_Name) != 0)
 
 Alter Table Groups
 Add Constraint NN__Groups__G_name__NotNULL
@@ -166,6 +182,10 @@ fOREIGN KEY(USE_ID) REFERENCES Users(CONTACT_ID),
 fOREIGN KEY(Contact_ID) REFERENCES Contact(ID)
 ON DELETE NO ACTION   ON UPDATE CASCADE
 );
+
+
+ALTER TABLE Call
+ADD CHECK(call_type = 'Video' OR call_Type = 'Voice')
 
 Alter Table Call
 Add Constraint NN__Call__Contact_ID__NotNULL
@@ -185,6 +205,7 @@ Check (Call.call_type = 'Video' Or Call.call_type = 'Voice');
 
 ALTER TABLE Call
 ADD CHECK(Contact_ID!=Use_ID)
+
 
 CREATE TABLE Session(
 Session_ID char(7) PRIMARY KEY,
@@ -736,14 +757,3 @@ WHERE chat_id =(SELECT M.chat_id
 				GROUP BY M.chat_id,M.member_id
 				HAVING COUNT(*)>=2)
 SET ROWCOUNT 0
-
-
-Alter Table Setting
-Add Country nvarchar(20);
-
-Update Setting
-Set Country = 'IR.Iran';
-
-Alter Table Setting
-Drop Column Country
-
