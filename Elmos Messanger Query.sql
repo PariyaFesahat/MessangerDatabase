@@ -630,3 +630,19 @@ VALUES
 ('9931673','0187236'),
 ('9931673','5692102')
 ;
+
+
+/* DELETE DUPLICATED ROWS OF MEMBER TABLE */
+SET ROWCOUNT 1
+DELETE FROM Members 
+WHERE chat_id =(SELECT M.chat_id
+				FROM Members M
+				GROUP BY M.chat_id,M.member_id
+				HAVING COUNT(*)>=2
+			  )
+			  AND 
+			  member_id=(SELECT M.member_id
+				FROM Members M
+				GROUP BY M.chat_id,M.member_id
+				HAVING COUNT(*)>=2)
+SET ROWCOUNT 0
