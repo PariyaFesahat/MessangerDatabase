@@ -724,6 +724,7 @@ Where
 						Where m.chat_id = m1.chat_id)
 Order By Member_1, Member_2 Asc;
 
+
 --Mutual Users Between Diffrenet Groups
 Select Distinct m1.chat_id, m2.chat_id, m1.member_id as Member_1, m2.member_id as Member_2
 From 
@@ -770,3 +771,27 @@ From
 	On S.Set_ID = Ses.Set_ID
 Group By  S.sound, Ses.Country
 Having S.sound = 0;
+
+
+--Countries With The Most Chatting
+Select Country
+From Contact as c, Session As  ses
+Where ses.Use_ID in (	Select m1.Sender_ID
+						From 
+							Session As s Join Users As u
+							On s.Use_ID = u.Contact_ID,
+							MSG As m1
+						Where 
+							u.Contact_ID = m1.Sender_ID
+						Group By m1.Sender_ID
+						Having Count(m1.Sender_ID) = (	Select Top 1 Count(Sender_ID) As MostNum
+										From 
+											Session As s Join Users As u
+											On s.Use_ID = u.Contact_ID,
+											MSG As m
+										Where 
+											u.Contact_ID = m.Sender_ID
+										Group By Sender_ID
+										Order By MostNum Desc))
+	And c.ID = ses.Use_ID;
+
