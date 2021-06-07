@@ -29,17 +29,25 @@ usage char(4)
 	CHECK(usage = 'Wifi' OR usage = 'Data'),
 twoStep nvarchar(MAX)
 	CHECK(LEN(twoStep) >= 4),
-sound int
-	CHECK(sound >= 1 AND sound <= 100),
+sound int,
 passcode nvarchar(25)
 	CHECK(LEN(passcode) >= 12),
 );
+ALTER TABLE setting
+ADD CHECK (storage_Path Like 'C:\Users\%\Downloads\Messanger')
 
 ALTER TABLE Setting
+<<<<<<< HEAD
 ADD CHECK (storage_Path like 'C:\U');
 
 Alter Table Setting
 Drop Constraint CK__Setting__sound__2A4B4B5E
+=======
+ADD CHECK(LEN(storage_Path) != 0)
+
+--Alter Table Setting
+--Drop Constraint CK__Setting__sound__2A4B4B5E
+>>>>>>> main
 Alter Table Setting
 Add Constraint CK__Setting__sound__SoundRange Check (sound >= 0 AND sound <= 100)
 ALTER TABLE setting
@@ -762,23 +770,29 @@ WHERE chat_id =(SELECT M.chat_id
 				HAVING COUNT(*)>=2)
 SET ROWCOUNT 0
 
+INSERT INTO Contact(ID , F_Name, L_Name, phone, profile_pic, bio)
+VALUES
+('6565656','HOMAYOON','SHAJARIAN','09352148569','https://picture.com/6565656','HOMAYOON SHAJARIAN az tehran 20 sale '),
+('5656565','REZA','Lotfinejad','09125421368','https://picture.com/5656565','REZA az shiraz 12 sale '),
+('8585858','KARIM','Hosseini','09012547852','https://picture.com/858585','KARIM az ghazvin 56 sale ');
 
-/******************QUERY**************/
-SELECT DISTINCT s.sound, cu.Contact_ID
-FROM Members as m, Contact_Of_User as cu, Users as u, Session as se, setting as s
-WHERE m.chat_id = '2000000' AND cu.Contact_ID = m.member_id AND u.Contact_ID = cu.Use_ID AND 
-se.Use_ID = u.Contact_ID AND s.Set_ID = se.Set_ID
 
-SELECT Set_Id, s.twoStep
-FROM Setting as s
-WHERE 13 < LEN(s.passcode)
+INSERT INTO Users VALUES
+('6565656'),
+('5656565'),
+('8585858');
 
-SELECT top(3) c.Ch_name, a.inv_link, COUNT(m.member_id) as members
-FROM Members as m , Channel as c, Accessibility as a
-WHERE c.Chat_ID = m.chat_id AND a.A_ID = c.A_ID
-GROUP BY c.Ch_name,a.inv_link,m.chat_id
-ORDER BY COUNT(m.member_id) desc
+INSERT INTO Setting
+VALUES
+  ('1212545', 'C:\Users\5692101\Downloads\Messanger', '00:02:00', 'Data', '658956', 60, '3636521478956'),
+  ('1365858', 'C:\Users\5692101\Downloads\Messanger', '00:03:00', 'Wifi', '658956', 60, '7847458745213'),
+  ('1659856', 'C:\Users\5692101\Downloads\Messanger', '00:02:00', 'Data', '963258', 20, '9874847558945');
 
-SELECT a.Descriptions, c.bio, c.F_Name, c.L_Name
-FROM Contact as c, Accessibility as a, HAS_AA as h , admin as ad
-WHERE h.A_ID = a.A_ID AND ad.Contact_ID = h.Admin_ID AND c.ID = ad.Contact_ID
+
+
+
+INSERT INTO Session (Session_ID, Use_ID, Set_ID, timeStamps, IPs, device)
+VALUES
+  ('4854784','6565656','1212545','2020-08-25 13:10:02','7.45.24.1','SM-K2453'),
+  ('4236989','5656565','1365858','2020-03-01 13:10:02','7.45.24.1','SM-J1485'),
+  ('2547913','8585858','1659856','2020-02-23 13:10:02','6.45.24.1','SM-A3697');
