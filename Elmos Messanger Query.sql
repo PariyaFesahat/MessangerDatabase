@@ -34,16 +34,19 @@ sound int
 passcode nvarchar(25)
 	CHECK(LEN(passcode) >= 12),
 );
-ALTER TABLE setting
-ADD CHECK (storage_Path Like 'C:\Users\%\Downloads\Messanger')
 
 ALTER TABLE Setting
-ADD CHECK(LEN(storage_Path) != 0)
+ADD CHECK (storage_Path like 'C:\U');
 
 Alter Table Setting
 Drop Constraint CK__Setting__sound__2A4B4B5E
 Alter Table Setting
 Add Constraint CK__Setting__sound__SoundRange Check (sound >= 0 AND sound <= 100)
+ALTER TABLE setting
+ADD CHECK (storage_Path Like 'C:\Users\%\Downloads\Messanger');
+
+ALTER TABLE Setting
+ADD CHECK(LEN(storage_Path) != 0);
 
 CREATE TABLE Chat(
 Chat_ID char(7) PRIMARY KEY,
@@ -73,8 +76,7 @@ phone char(11),
 profile_pic nvarchar(150),
 bio nvarchar(150),
 );
-ALTER TABLE Contact
-ADD CHECK (storage_Path like 'https://%')
+
 
 ALTER TABLE Contact
 ADD CHECK(phone LIKE '09%');
@@ -150,15 +152,13 @@ FOREIGN KEY(A_ID) REFERENCES Accessibility(A_ID)
 ON DELETE NO ACTION   ON UPDATE CASCADE
 );
 
-<<<<<<< HEAD
 ALTER TABLE Channel
 ADD CHECK(LEN(ch_name) != 0)
-=======
+
 Alter Table Channel
 Add Constraint NN__Channel__Ch_name__NotNULL
 Check (Channel.Ch_name Is Not Null);
 
->>>>>>> main
 
 CREATE TABLE Groups(
 Chat_ID char(7) PRIMARY KEY,
@@ -187,10 +187,10 @@ fOREIGN KEY(Contact_ID) REFERENCES Contact(ID)
 ON DELETE NO ACTION   ON UPDATE CASCADE
 );
 
-<<<<<<< HEAD
+
 ALTER TABLE Call
 ADD CHECK(call_type = 'Video' OR call_Type = 'Voice')
-=======
+
 Alter Table Call
 Add Constraint NN__Call__Contact_ID__NotNULL
 Check (Call.Contact_ID Is Not Null);
@@ -209,7 +209,7 @@ Check (Call.call_type = 'Video' Or Call.call_type = 'Voice');
 
 ALTER TABLE Call
 ADD CHECK(Contact_ID!=Use_ID)
->>>>>>> main
+
 
 CREATE TABLE Session(
 Session_ID char(7) PRIMARY KEY,
@@ -763,7 +763,6 @@ WHERE chat_id =(SELECT M.chat_id
 SET ROWCOUNT 0
 
 
-<<<<<<< HEAD
 /******************QUERY**************/
 SELECT DISTINCT s.sound, cu.Contact_ID
 FROM Members as m, Contact_Of_User as cu, Users as u, Session as se, setting as s
@@ -783,14 +782,3 @@ ORDER BY COUNT(m.member_id) desc
 SELECT a.Descriptions, c.bio, c.F_Name, c.L_Name
 FROM Contact as c, Accessibility as a, HAS_AA as h , admin as ad
 WHERE h.A_ID = a.A_ID AND ad.Contact_ID = h.Admin_ID AND c.ID = ad.Contact_ID
-=======
-Alter Table Setting
-Add Country nvarchar(20);
-
-Update Setting
-Set Country = 'IR.Iran';
-
-Alter Table Setting
-Drop Column Country
-
->>>>>>> main
