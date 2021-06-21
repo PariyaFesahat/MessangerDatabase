@@ -161,3 +161,18 @@ EXEC Open_Chat_Proc @ChatID = '2000000', @AccID = '1111111';
 -- A PV Test
 EXEC Open_Chat_Proc @ChatID = '1000000', @AccID = '000none';
 
+
+-- Saved Message Of A User
+CREATE Or ALTER FUNCTION SavedMSG(@User_ID CHAR(7))
+RETURNS TABLE
+AS
+RETURN
+	SELECT M.*
+	FROM 
+		Has_SM AS H INNER JOIN MSG AS M
+		ON M.MSG_ID = H.MSG_ID INNER JOIN Saved_Message AS SM
+		ON SM.Saved_ID = H.Saved_ID
+	WHERE @User_ID = SM.Use_ID
+
+Select Distinct * From SavedMSG(5892101);
+	
