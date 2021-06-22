@@ -177,7 +177,7 @@ RETURN
 Select * From SavedMSG('3652148');
 
 
--- Banned Users can not send any message !
+-- [INSERT] Banned Users can not send any message !
 Create Table BannedMSG(
 MSG_ID char(7) PRIMARY KEY,
 Chat_ID char(7),
@@ -190,15 +190,16 @@ ON DELETE NO ACTION   ON UPDATE CASCADE
 
 CREATE Or Alter TRIGGER BannedRestrict
 ON dbo.MSG
-INSTEAD OF INSERT
+After Insert
 AS
 BEGIN
 	SET NOCOUNT ON
-	INSERT INTO dbo.BannedMSG( 
-        MSG_ID, Chat_ID, Sender_ID
-    )
+	Declare @msgid Char(7)
+	--INSERT INTO dbo.BannedMSG( 
+ --       MSG_ID, Chat_ID, Sender_ID
+ --   )
     SELECT
-        i.MSG_ID, i.Chat_ID, i.Sender_ID
+        @msgid = i.MSG_ID
     FROM
         inserted i
     WHERE
@@ -220,6 +221,9 @@ BEGIN
 									Where cu1.Contact_ID = cu.Contact_ID
 									Group By cu1.Contact_ID, cu1.IsBlock Having cu1.IsBlock = 1
 									Order By NumberOfBlocks Desc)));	
+
+	Delete From MSG
+	Where @msgid = MSG_ID
 END
 
 /* ======================= [Banned Users Restriction] ======================= 
@@ -228,11 +232,82 @@ END
 -- A Text Test From KIM CHON ON :D
 Insert Into MSG
 Values
-	('0MSG111','1000000','5692105','Lat tar az Kim Chon On nadidam!',GETDATE(),GETDATE(),NULL,NULL,NULL,NULL,NULL);
---Delete From BannedMSG
---Where MSG_ID = '0MSG111'
+	('0MSG111', '1000000', '5692105', 'Lat tar az Kim Chon On nadidam!', GETDATE(), GETDATE(), NULL, NULL, NULL, NULL, NULL);
+Delete From MSG Where MSG_ID = '0MSG111'
 Select * From MSG Where MSG_ID = '0MSG111'
-Select * From BannedMSG Where MSG_ID = '0MSG111'
 
 
-	
+-- [Delete] Deleted Messages in groups/channels will be logged into a new table -> MSGLOG
+Create Table MSGLOG(
+MSG_ID char(7),
+Chat_ID char(7),
+Sender_ID char(7),
+txt nvarchar(Max),
+times time,
+dates date,
+locations nvarchar(50),
+Picture nvarchar(200),
+music nvarchar(200),
+files nvarchar(200),
+video nvarchar(200)
+
+FOREIGN KEY(Sender_ID) REFERENCES Sender(Contact_ID),
+FOREIGN KEY(Chat_ID) REFERENCES Chat(Chat_ID)
+ON DELETE NO ACTION   ON UPDATE CASCADE
+);
+--Drop Table MSGLOG
+Create Or Alter Trigger MSGLOG_TRG
+ON dbo.MSG
+AFTER DELETE
+AS
+BEGIN
+    SET NOCOUNT ON;
+INSERT INTO dbo.MSGLOG
+	(
+	MSG_ID,
+	Chat_ID,
+	Sender_ID,
+	txt,
+	times,
+	dates,
+	locations,
+	Picture,
+	music,
+	files,
+	video
+	)
+
+	SELECT
+		i.MSG_ID,
+		i.Chat_ID,
+		i.Sender_ID,
+		i.txt,
+		i.times,
+		i.dates,
+		i.locations,
+		i.Picture,
+		i.music,
+		i.files,
+		i.video
+    FROM
+        deleted i
+End;
+
+/* ======================= [Deleted Messages Log] ======================= 
+	Deleted messages will be logged into MSGLOG Table for admins and owners
+	who have recent action accesssibility
+*/
+-- A Deletion Test
+INSERT INTO MSG
+VALUES
+	('0MSG128', '3000000', '5692106', 'To Taj dari Vali toye SnapChat!', '11:00:42', '2021-04-04', null, null, null, null, null);
+Select * From MSG Where MSG_ID = '0MSG128';
+Delete From MSG Where MSG_ID = '0MSG128';
+Select * From MSGLOG Where MSG_ID = '0MSG128';
+Delete From MSGLOG
+
+
+
+
+
+
