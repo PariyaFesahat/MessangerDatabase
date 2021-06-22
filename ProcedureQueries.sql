@@ -174,5 +174,65 @@ RETURN
 		ON SM.Saved_ID = H.Saved_ID
 	WHERE @User_ID = SM.Use_ID
 
-Select Distinct * From SavedMSG(5892101);
+Select * From SavedMSG('3652148');
+
+
+-- Banned Users can not send any message !
+Create Table BannedMSG(
+MSG_ID char(7) PRIMARY KEY,
+Chat_ID char(7),
+Sender_ID char(7),
+
+FOREIGN KEY(Sender_ID) REFERENCES Sender(Contact_ID),
+FOREIGN KEY(Chat_ID) REFERENCES Chat(Chat_ID)
+ON DELETE NO ACTION   ON UPDATE CASCADE
+);
+
+CREATE Or Alter TRIGGER BannedRestrict
+ON dbo.MSG
+INSTEAD OF INSERT
+AS
+BEGIN
+	SET NOCOUNT ON
+	INSERT INTO dbo.BannedMSG( 
+        MSG_ID, Chat_ID, Sender_ID
+    )
+    SELECT
+        i.MSG_ID, i.Chat_ID, i.Sender_ID
+    FROM
+        inserted i
+    WHERE
+        i.Sender_ID IN 
+			(Select c.ID
+			From Contact As c
+			Where c.ID In (	Select Distinct cu.Contact_ID
+						From Contact_Of_User cu
+						Where  
+								(Select Count(*)
+								From Contact_Of_User As cu2
+								Where cu2.IsBlock = 1)
+								/
+								(Select Count(*)
+								From Contact_Of_User As cu1)
+								<
+								(	Select Top 1 Count(cu1.IsBlock) As NumberOfBlocks
+									From Contact_Of_User cu1
+									Where cu1.Contact_ID = cu.Contact_ID
+									Group By cu1.Contact_ID, cu1.IsBlock Having cu1.IsBlock = 1
+									Order By NumberOfBlocks Desc)));	
+END
+
+/* ======================= [Banned Users Restriction] ======================= 
+	Banned users can not send any messages (text/file/video/music/picture)
+*/
+-- A Text Test From KIM CHON ON :D
+Insert Into MSG
+Values
+	('0MSG111','1000000','5692105','Lat tar az Kim Chon On nadidam!',GETDATE(),GETDATE(),NULL,NULL,NULL,NULL,NULL);
+--Delete From BannedMSG
+--Where MSG_ID = '0MSG111'
+Select * From MSG Where MSG_ID = '0MSG111'
+Select * From BannedMSG Where MSG_ID = '0MSG111'
+
+
 	
