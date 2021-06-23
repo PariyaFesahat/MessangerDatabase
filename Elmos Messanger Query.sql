@@ -37,17 +37,10 @@ ALTER TABLE setting
 ADD CHECK (storage_Path Like 'C:\Users\%\Downloads\Messanger')
 
 ALTER TABLE Setting
-<<<<<<< HEAD
-ADD CHECK (storage_Path like 'C:\U');
-
-Alter Table Setting
-Drop Constraint CK__Setting__sound__2A4B4B5E
-=======
 ADD CHECK(LEN(storage_Path) != 0)
 
 --Alter Table Setting
 --Drop Constraint CK__Setting__sound__2A4B4B5E
->>>>>>> main
 Alter Table Setting
 Add Constraint CK__Setting__sound__SoundRange Check (sound >= 0 AND sound <= 100)
 ALTER TABLE setting
