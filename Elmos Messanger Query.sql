@@ -43,6 +43,11 @@ ADD CHECK(LEN(storage_Path) != 0)
 --Drop Constraint CK__Setting__sound__2A4B4B5E
 Alter Table Setting
 Add Constraint CK__Setting__sound__SoundRange Check (sound >= 0 AND sound <= 100)
+ALTER TABLE setting
+ADD CHECK (storage_Path Like 'C:\Users\%\Downloads\Messanger');
+
+ALTER TABLE Setting
+ADD CHECK(LEN(storage_Path) != 0);
 
 CREATE TABLE Chat(
 Chat_ID char(7) PRIMARY KEY,
